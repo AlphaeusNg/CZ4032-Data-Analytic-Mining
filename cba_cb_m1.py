@@ -8,7 +8,7 @@
 import sys
 import rg
 from functools import cmp_to_key
-
+import collections
 # Retrieve an array of attributes in string format?
 
 
@@ -174,7 +174,22 @@ def classifier_builder_m1(cars, dataset):
             classifier.insert(rule, dataset)
 
     # Find the first rule p in RL with the lowest total number of errors and drop all the rules after p in RL; add default class
-    classifier.discard()
+    # But if no rules, then don't discard
+    if len(classifier.ruleList) > 0:
+        classifier.discard()
+    if classifier.defaultClass == None:
+        # if really no default then look through dataset and pick the majority class
+        compare_class_list = []
+
+        # Loop through each class column
+        for i in range(len(dataset)):
+            compare_class_list.append(dataset[i][-1])
+        # Get total count of each prediction
+        count_of_each_class = collections.Counter(compare_class_list)
+
+        # Get the class with the majority vote
+        classifier.defaultClass = max(count_of_each_class, key=count_of_each_class.get)
+
     return classifier
 
 if __name__ == '__main__':

@@ -10,22 +10,26 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import f1_score
 
 # Datasets that worked
-# data_path = 'datasets/car.data'
-# scheme_path = 'datasets/car.names'
+data_path = 'datasets/car.data'
+scheme_path = 'datasets/car.names' # label: 6
 # data_path = 'datasets/iris.data'
 # scheme_path = 'datasets/iris.names'
 # data_path = 'datasets/tic-tac-toe.data'
 # scheme_path = 'datasets/tic-tac-toe.names'
 # data_path = 'datasets/glass.data'
-# scheme_path = 'datasets/glass.names'
+# scheme_path = 'datasets/glass.names' # label: 10
 # data_path = 'datasets/lymphography.data'
-# scheme_path = 'datasets/lymphography.names'
-data_path = 'datasets/haberman.data'
-scheme_path = 'datasets/haberman.names'
+# scheme_path = 'datasets/lymphography.names' # label: 0
+# data_path = 'datasets/haberman.data'
+# scheme_path = 'datasets/haberman.names'
+
+label_col = 6
 
 # doesn't work
 # data_path = 'datasets/abalone.data'
 # scheme_path = 'datasets/abalone.names'
+# data_path = 'datasets/wdbc.data'
+# scheme_path = 'datasets/wdbc.names'
 
 data, attributes, value_type = read(data_path, scheme_path)
 #random.shuffle(data) # randoming the data results in weird results
@@ -65,13 +69,20 @@ def getErrorRate(classifier, dataset):
     return error_number / size
 
 def getTrueAndPred(classifier, dataset, label_col):
-    for rule in classifier.ruleList:
-        for item in rule.cond_set:
-            for case in dataset:
+    for case in dataset:
+        rule_found = False
+        for rule in classifier.ruleList:
+            for item in rule.cond_set:
                 if rule.cond_set[item] in case:
                     pred.append(rule.class_label)
                     true.append(case[label_col])
-
+                    rule_found = True
+                    break
+            if rule_found:
+                break
+        if not rule_found:
+            pred.append(classifier.defaultClass)
+            true.append(case[label_col])
     # print(pred)
     # print(true)
 
@@ -106,7 +117,7 @@ for k in range(len(split_point)-1):
         error_total_rate += error_rate  
 
         # Takes in the classifer, test_dataset and col of the label in the test dataset
-        getTrueAndPred(classifier, test_dataset, 3)
+        getTrueAndPred(classifier, test_dataset, label_col)
 
         total_classifier_rule_num += len(classifier.ruleList)
         # print("CBA-CB M1's run time with pruning: %f s" % cba_cb_runtime)
