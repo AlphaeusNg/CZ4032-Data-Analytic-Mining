@@ -203,6 +203,7 @@ for k in range(len(split_point)-1):
 
         # Update current metrics
         error_total_rate = error_total_rate/number_of_partitions
+        total_classifier_rule_num = total_classifier_rule_num/ (number_of_partitions-1)
         total_precision_score = get_precision_metrics(true, pred, total_precision_score)
         total_recall_score = get_total_recall_metrics(true, pred, total_recall_score)
         total_F1_score = get_total_F1_score(true, pred, total_F1_score)
