@@ -22,10 +22,10 @@ import matplotlib.pyplot as plt
 
 
 # Datasets that worked
-data_path = 'datasets/car.data'
-scheme_path = 'datasets/car.names' # label: 6
-# data_path = 'datasets/iris.data'
-# scheme_path = 'datasets/iris.names'
+# data_path = 'datasets/car.data'
+# scheme_path = 'datasets/car.names' # label: 6
+data_path = 'datasets/iris.data'
+scheme_path = 'datasets/iris.names'
 # data_path = 'datasets/tic-tac-toe.data'
 # scheme_path = 'datasets/tic-tac-toe.names'
 # data_path = 'datasets/glass.data'
@@ -34,8 +34,6 @@ scheme_path = 'datasets/car.names' # label: 6
 # scheme_path = 'datasets/lymphography.names' # label: 0
 # data_path = 'datasets/haberman.data'
 # scheme_path = 'datasets/haberman.names'
-
-label_col = 6
 
 
 
@@ -65,16 +63,22 @@ def getErrorRate(classifier, dataset):
     size = len(dataset)
     error_number = 0
     for case in dataset:
+        #print(case)
         is_satisfy_value = False
         for rule in classifier.ruleList:
             is_satisfy_value = is_satisfy(case, rule)
             if is_satisfy_value == True:
                 break
+            elif is_satisfy_value == False:
+                error_number += 1
+                break
         if is_satisfy_value == None:
             if classifier.defaultClass != case[-1]:
                 error_number += 1
-        elif is_satisfy_value == False:
-            error_number += 1
+        #     for rule in classifier.ruleList:
+        #         rule.print_rule()
+        # print(is_satisfy_value)
+    # print("Error Number", error_number)
     return error_number / size
 
 def getTrueAndPred(classifier, dataset):
@@ -82,6 +86,7 @@ def getTrueAndPred(classifier, dataset):
     true = []
     pred = []
     for case in dataset:
+        # print(case)
         rule_found = False
         for rule in classifier.ruleList:
             rule_found = is_satisfy_case(case, rule)
@@ -92,10 +97,10 @@ def getTrueAndPred(classifier, dataset):
         if rule_found == False:
             pred.append(classifier.defaultClass)
             true.append(case[-1])
-
-    return true, pred
+    #     print(rule_found)
     # print(pred)
     # print(true)
+    return true, pred
 
 for k in range(len(split_point)-1):
     print("\nRound %d:" % k)
@@ -122,7 +127,10 @@ for k in range(len(split_point)-1):
         print("\nClassifier:")
         classifier.print()
 
+        # print("Length of test dataset:", len(test_dataset))
         error_rate = getErrorRate(classifier, test_dataset)
+        # print(classifier.ruleList)
+        # print("rule_found values")
 
         # Takes in the classifer, test_dataset in the test dataset
         true, pred = getTrueAndPred(classifier, test_dataset)

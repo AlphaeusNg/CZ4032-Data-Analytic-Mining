@@ -10,12 +10,15 @@ class RuleItem:
         cond_sup_count = 0
         rule_sup_count = 0
         for case in dataset:
-            for i in self.cond_set:
-                if self.cond_set[i] != case[i]:
-                    return cond_sup_count, rule_sup_count 
-            cond_sup_count += 1
-            if self.class_label == case[-1]:
-                rule_sup_count += 1
+            is_contained = True
+            for index in self.cond_set:
+                if self.cond_set[index] != case[index]:
+                    is_contained = False
+                    break
+            if is_contained:
+                cond_sup_count += 1
+                if self.class_label == case[-1]:
+                    rule_sup_count += 1
         return cond_sup_count, rule_sup_count
 
     def getSup(self, dataset_size):

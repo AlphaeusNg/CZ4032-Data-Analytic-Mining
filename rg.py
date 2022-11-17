@@ -15,7 +15,10 @@ def join(item1, item2, dataset):
         if item1.cond_set[item] != item2.cond_set[item]:
             return None
 
-    category = cat1 or cat2
+    category = cat1.union(cat2)
+
+    # if len(category) > len(cat1) + 1:
+    #     return None
 
     new_cond_set = dict()
 
@@ -31,12 +34,12 @@ def join(item1, item2, dataset):
 def candidate_gen(frequent_ruleitems, dataset):
     ret_frequentruleitems = FrequentRuleItems()
 
-    for item1 in frequent_ruleitems.frequent_ruleitems_set:
-        for item2 in frequent_ruleitems.frequent_ruleitems_set:
+    for item1 in frequent_ruleitems.freq_ruleitems_set:
+        for item2 in frequent_ruleitems.freq_ruleitems_set:
             new_ruleitem = join(item1, item2, dataset)
             if new_ruleitem != None:
                 ret_frequentruleitems.add(new_ruleitem)
-                if ret_frequentruleitems.getSize() >= 80000:      # not allow to store more than 1000 ruleitems
+                if ret_frequentruleitems.getSize() >= 2000:      # not allow to store more than 80000 ruleitems
                     return ret_frequentruleitems
 
     return ret_frequentruleitems
@@ -53,6 +56,8 @@ def rule_generator(dataset, minsup, minconf):
             cond_set = {column: value}
             for classes in class_label:
                 rule_item = RuleItem(cond_set, classes, dataset)
+                # rule_item.print_rule()
+                # print(rule_item.sup , minsup)
                 if rule_item.sup >= minsup:
                     frequent_ruleitems.add(rule_item)
     _car.generate_rules(frequent_ruleitems, minsup, minconf)
@@ -60,11 +65,12 @@ def rule_generator(dataset, minsup, minconf):
 
     last_cars_number = 0
     curr_cars_num = len(cars.rules)
-    while frequent_ruleitems.getSize() > 0 and curr_cars_num <= 2000 and (curr_cars_num - last_cars_number) >= 10:
+    while frequent_ruleitems.getSize() > 0 and curr_cars_num <= 2000 and (curr_cars_num - last_cars_number) >= 1:
         candidate = candidate_gen(frequent_ruleitems, dataset)
+        #print("Length:", len(candidate.freq_ruleitems_set))
         frequent_ruleitems = FrequentRuleItems()
         _car = CAR()
-        for item in candidate.frequent_ruleitems_set:
+        for item in candidate.freq_ruleitems_set:
             if item.sup >= minsup:
                 frequent_ruleitems.add(item)
         _car.generate_rules(frequent_ruleitems, minsup, minconf)
