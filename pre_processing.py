@@ -103,6 +103,20 @@ def discard(data, discard_list):
                 data_result[i].append(data[i][j])
     return data_result
 
+def move_col_to_bottom(data, col):
+    size = len(data)
+    length = len(data[0])
+    data_result = []
+    for i in range(size):
+        data_result.append([])
+        for j in range(length):
+            if j != col:
+                data_result[i].append(data[i][j])
+        # Append the delete col to the last col
+        data_result[i].append(data[i][col])
+    
+    return data_result
+
 
 # Main method here, see Description in detail
 # data: original data table
@@ -110,12 +124,21 @@ def discard(data, discard_list):
 # value_type: a list identifying the type of each column
 # Returned value: a data table after process
 def pre_process(data, attribute, value_type):
+    if "class" in attribute[0]:
+        data = move_col_to_bottom(data, 0)
+        print("Move Class col to bottom")
+
     column_num = len(data[0])
     size = len(data)
     class_column = [x[-1] for x in data]
     discard_list = []
     for i in range(0, column_num - 1):
         data_column = [x[i] for x in data]
+
+        # Omit ID column
+        if "ID" in attribute[i] or "Id" in attribute[i]:
+            discard_list.append(i)
+            continue
 
         # process missing values
         missing_values_ratio = data_column.count('?') / size

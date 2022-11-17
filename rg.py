@@ -10,6 +10,8 @@ def join(item1, item2, dataset):
         return None
 
     intersect = cat1.intersection(cat2)
+    if len(intersect) < len(cat1) - 1:
+        return None
     
     for item in intersect:
         if item1.cond_set[item] != item2.cond_set[item]:
@@ -39,7 +41,7 @@ def candidate_gen(frequent_ruleitems, dataset):
             new_ruleitem = join(item1, item2, dataset)
             if new_ruleitem != None:
                 ret_frequentruleitems.add(new_ruleitem)
-                if ret_frequentruleitems.getSize() >= 2000:      # not allow to store more than 80000 ruleitems
+                if ret_frequentruleitems.getSize() >= 5000:      # not allow to store more than 80000 ruleitems
                     return ret_frequentruleitems
 
     return ret_frequentruleitems
@@ -65,7 +67,7 @@ def rule_generator(dataset, minsup, minconf):
 
     last_cars_number = 0
     curr_cars_num = len(cars.rules)
-    while frequent_ruleitems.getSize() > 0 and curr_cars_num <= 2000 and (curr_cars_num - last_cars_number) >= 1:
+    while frequent_ruleitems.getSize() > 0 and curr_cars_num <= 10000 and (curr_cars_num - last_cars_number) >= 1:
         candidate = candidate_gen(frequent_ruleitems, dataset)
         #print("Length:", len(candidate.freq_ruleitems_set))
         frequent_ruleitems = FrequentRuleItems()

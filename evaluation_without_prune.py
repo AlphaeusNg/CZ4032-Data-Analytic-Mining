@@ -24,16 +24,18 @@ import matplotlib.pyplot as plt
 # Datasets that worked
 # data_path = 'datasets/car.data'
 # scheme_path = 'datasets/car.names' # label: 6
-data_path = 'datasets/iris.data'
-scheme_path = 'datasets/iris.names'
-# data_path = 'datasets/tic-tac-toe.data'
-# scheme_path = 'datasets/tic-tac-toe.names'
+# data_path = 'datasets/iris.data'
+# scheme_path = 'datasets/iris.names'
+data_path = 'datasets/tic-tac-toe.data'
+scheme_path = 'datasets/tic-tac-toe.names'
 # data_path = 'datasets/glass.data'
 # scheme_path = 'datasets/glass.names' # label: 10
 # data_path = 'datasets/lymphography.data'
 # scheme_path = 'datasets/lymphography.names' # label: 0
 # data_path = 'datasets/haberman.data'
 # scheme_path = 'datasets/haberman.names'
+# data_path = 'datasets/wdbc.data'
+# scheme_path = 'datasets/wdbc.names'
 
 
 
@@ -127,7 +129,7 @@ for k in range(len(split_point)-1):
         print("\nClassifier:")
         classifier.print()
 
-        # print("Length of test dataset:", len(test_dataset))
+        print("Length of test dataset:", len(test_dataset))
         error_rate = getErrorRate(classifier, test_dataset)
         # print(classifier.ruleList)
         # print("rule_found values")

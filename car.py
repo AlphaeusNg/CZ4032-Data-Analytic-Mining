@@ -87,7 +87,7 @@ def prune(rule, dataset):
                     min_rule_err = tmp_rule_err
                     pruned_rule = tmp_rule
                     if len(tmp_cond_set) >= 2:
-                        find_prune_rule(tmp_rule)
+                        find_prune_rule(tmp_rule, dataset)
 
     find_prune_rule(rule, dataset)
     return pruned_rule

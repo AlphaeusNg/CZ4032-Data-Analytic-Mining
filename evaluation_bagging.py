@@ -1,13 +1,16 @@
 import rg
 from cba_cb_m1 import classifier_builder_m1
-from cba_cb_m1 import is_satisfy
+from cba_cb_m1 import is_satisfy, is_satisfy_case
+import random
 from dataread import read
 from pre_processing import pre_process
 import timeit
-import random
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 import collections
 
 # Datasets that worked
@@ -23,8 +26,6 @@ scheme_path = 'datasets/tic-tac-toe.names' # label: 9
 # scheme_path = 'datasets/lymphography.names' # label: 0
 # data_path = 'datasets/haberman.data'
 # scheme_path = 'datasets/haberman.names' # label: 3
-
-label_col = 9
 
 # doesn't work
 # data_path = 'datasets/abalone.data'
@@ -52,46 +53,51 @@ total_F1_score = 0
 minSup=0.01
 minConf=0.5
 
-# scikit learn metrics
-true = []
-pred = []
-
 # calculate the error rate of the classifier on the dataset
 def getErrorRate(classifier, dataset):
     size = len(dataset)
     error_number = 0
     for case in dataset:
+        #print(case)
         is_satisfy_value = False
         for rule in classifier.ruleList:
             is_satisfy_value = is_satisfy(case, rule)
             if is_satisfy_value == True:
                 break
-        if is_satisfy_value == False:
+            elif is_satisfy_value == False:
+                error_number += 1
+                break
+        if is_satisfy_value == None:
             if classifier.defaultClass != case[-1]:
                 error_number += 1
+        #     for rule in classifier.ruleList:
+        #         rule.print_rule()
+        # print(is_satisfy_value)
+    # print("Error Number", error_number)
     return error_number / size
 
 def get_pred_only(classifier, dataset):
-    temp_pred = []
+    # List of predicted labels
+    pred = []
     for case in dataset:
+        # print(case)
         rule_found = False
         for rule in classifier.ruleList:
-            for item in rule.cond_set:
-                if rule.cond_set[item] in case:
-                    temp_pred.append(rule.class_label)
-                    rule_found = True
-                    break
-            if rule_found:
+            rule_found = is_satisfy_case(case, rule)
+            if rule_found == True:
+                pred.append(rule.class_label)
                 break
-        # Can't find a rule that match this case, assign default
-        if not rule_found:
-            temp_pred.append(classifier.defaultClass)
-    return temp_pred
+        if rule_found == False:
+            pred.append(classifier.defaultClass)
+    #     print(rule_found)
+    # print(pred)
+    # print(true)
+    return pred
 
-def get_true_only(dataset, label_col):
+def get_true_only(dataset):
     temp_true = []
     for row in dataset:
-        temp_true.append(row[label_col])
+        temp_true.append(row[-1])
     return temp_true
 
 def getSubSamples(training_dataset, number_of_partitions):
@@ -156,8 +162,8 @@ for k in range(len(split_point)-1):
     # Find out Rule Generation Timings
     start = timeit.default_timer()
     cars = rg.rule_generator(training_dataset, minSup, minConf)
-    cars.prune_rules(training_dataset)
-    cars.rules = cars.pruned_rules
+    # cars.prune_rules(training_dataset)
+    # cars.rules = cars.pruned_rules
     end = timeit.default_timer()
     cba_rg_runtime = end - start
     cba_rg_total_runtime += cba_rg_runtime
@@ -195,7 +201,7 @@ for k in range(len(split_point)-1):
 
         # Takes in the classifier, test_dataset and col of the label in the test dataset
         # (Need to modify value of 'col of the label' for each dataset)
-        true = get_true_only(test_dataset, label_col)
+        true = get_true_only(test_dataset)
 
         end = timeit.default_timer()
         cba_cb_bagging_runtime = end - start
