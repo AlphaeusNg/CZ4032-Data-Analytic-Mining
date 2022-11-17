@@ -57,6 +57,12 @@ def is_satisfy(datacase, rule):
     else:
         return False
 
+def is_satisfy_case(datacase, rule):
+    for item in rule.cond_set:
+        if datacase[item] != rule.cond_set[item]:
+            return False
+    return True
+
 """
 Description: The implementation of a naive algorithm for CBA-CB: M1. The class Classifier includes the set of selected
     rules and defaultClass, which can be expressed as <r1, r2, ..., rn, defaultClass>. Method classifier_builder_m1

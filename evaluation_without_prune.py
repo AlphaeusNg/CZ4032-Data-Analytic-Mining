@@ -1,6 +1,6 @@
 import rg
 from cba_cb_m1 import classifier_builder_m1
-from cba_cb_m1 import is_satisfy
+from cba_cb_m1 import is_satisfy, is_satisfy_case
 import random
 from dataread import read
 from pre_processing import pre_process
@@ -8,6 +8,9 @@ import timeit
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 
@@ -49,10 +52,10 @@ cba_cb_total_runtime = 0
 total_car = 0
 total_classifier_rule_num = 0
 error_total_rate = 0
+total_precision_score = 0
+total_recall_score = 0
+total_f1_score = 0
 
-# scikit learn metrics
-true = []
-pred = []
 
 minSup=0.01
 minConf=0.5
@@ -67,26 +70,30 @@ def getErrorRate(classifier, dataset):
             is_satisfy_value = is_satisfy(case, rule)
             if is_satisfy_value == True:
                 break
-        if is_satisfy_value == False:
+        if is_satisfy_value == None:
             if classifier.defaultClass != case[-1]:
                 error_number += 1
+        elif is_satisfy_value == False:
+            error_number += 1
     return error_number / size
 
-def getTrueAndPred(classifier, dataset, label_col):
+def getTrueAndPred(classifier, dataset):
+    # List of true and predicted labels
+    true = []
+    pred = []
     for case in dataset:
         rule_found = False
         for rule in classifier.ruleList:
-            for item in rule.cond_set:
-                if rule.cond_set[item] in case:
-                    pred.append(rule.class_label)
-                    true.append(case[label_col])
-                    rule_found = True
-                    break
-            if rule_found:
+            rule_found = is_satisfy_case(case, rule)
+            if rule_found == True:
+                pred.append(rule.class_label)
+                true.append(case[-1])
                 break
-        if not rule_found:
+        if rule_found == False:
             pred.append(classifier.defaultClass)
-            true.append(case[label_col])
+            true.append(case[-1])
+
+    return true, pred
     # print(pred)
     # print(true)
 
@@ -117,10 +124,24 @@ for k in range(len(split_point)-1):
 
         error_rate = getErrorRate(classifier, test_dataset)
 
-        # Takes in the classifer, test_dataset and col of the label in the test dataset
-        getTrueAndPred(classifier, test_dataset, label_col)
+        # Takes in the classifer, test_dataset in the test dataset
+        true, pred = getTrueAndPred(classifier, test_dataset)
+        ps = precision_score(true, pred, average='macro', zero_division=0)
+        rs = recall_score(true, pred, average='macro', zero_division=0)
+        f1 = f1_score(true, pred, average='macro', zero_division=0)
+
+        print("Metrics:", error_rate , ps, rs, f1)
 
         error_total_rate += error_rate
+
+        total_precision_score += ps
+        total_recall_score += rs
+        total_f1_score += f1
+
+        # Testing code
+        # cm = confusion_matrix(true, pred)
+        # sns.heatmap(cm, annot=True)
+        # plt.show()
 
         total_classifier_rule_num += len(classifier.ruleList)
         # print("CBA-CB M1's run time without pruning: %f s" % cba_cb_runtime)
@@ -137,6 +158,10 @@ print("Average No. of CARs without pruning: %d" % int(total_car / 10))
 # print("True Labels")
 # print(true)
 
-print("\nPrecision_score: %f" % round(precision_score(true, pred, average='macro', zero_division=0),3))
-print("Recall_score: %f" % round(recall_score(true, pred, average='macro', zero_division=0),3))
-print("F1_score: %f" % round(f1_score(true, pred, average='macro', zero_division=0),3))
+print("Average CBA's Precision Score without pruning: %f" % (total_precision_score / 10))
+print("Average CBA's Recall Score without pruning: %f" % (total_recall_score / 10))
+print("Average CBA's F1 Score without pruning: %f" % (total_f1_score / 10))
+
+# print("\nPrecision_score: %f" % round(precision_score(true, pred, average='macro', zero_division=0),3))
+# print("Recall_score: %f" % round(recall_score(true, pred, average='macro', zero_division=0),3))
+# print("F1_score: %f" % round(f1_score(true, pred, average='macro', zero_division=0),3))

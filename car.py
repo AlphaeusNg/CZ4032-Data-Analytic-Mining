@@ -19,6 +19,7 @@ class CAR:
         if rule_item.sup >= minSup and rule_item.conf >= minConf:
             if rule_item in self.rules:
                 return
+            # Prune rules of same condition set, but lower confidence
             for item in self.rules:
                 if item.cond_set == rule_item.cond_set:  
                     if item.conf < rule_item.conf:
