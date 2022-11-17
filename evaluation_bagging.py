@@ -16,10 +16,10 @@ import collections
 # Datasets that worked
 # data_path = 'datasets/car.data'
 # scheme_path = 'datasets/car.names' # label: 5
-# data_path = 'datasets/iris.data'
-# scheme_path = 'datasets/iris.names' # label: 4
-data_path = 'datasets/tic-tac-toe.data'
-scheme_path = 'datasets/tic-tac-toe.names' # label: 9
+data_path = 'datasets/iris.data'
+scheme_path = 'datasets/iris.names' # label: 4
+# data_path = 'datasets/tic-tac-toe.data'
+# scheme_path = 'datasets/tic-tac-toe.names' # label: 9
 # data_path = 'datasets/glass.data'
 # scheme_path = 'datasets/glass.names' # label: 10
 # data_path = 'datasets/lymphography.data'
@@ -208,8 +208,6 @@ for k in range(len(split_point)-1):
         cba_cb_bagging_total_runtime += cba_cb_bagging_runtime
 
         # Update current metrics
-        error_total_rate = error_total_rate/number_of_partitions
-        total_classifier_rule_num = total_classifier_rule_num/ (number_of_partitions-1)
         total_precision_score = get_precision_metrics(true, pred, total_precision_score)
         total_recall_score = get_total_recall_metrics(true, pred, total_recall_score)
         total_F1_score = get_total_F1_score(true, pred, total_F1_score)
