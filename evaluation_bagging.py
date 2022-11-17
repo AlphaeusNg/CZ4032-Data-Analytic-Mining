@@ -16,10 +16,10 @@ import collections
 # Datasets that worked
 # data_path = 'datasets/car.data'
 # scheme_path = 'datasets/car.names' # label: 5
-# data_path = 'datasets/iris.data'
-# scheme_path = 'datasets/iris.names' # label: 4
-data_path = 'datasets/tic-tac-toe.data'
-scheme_path = 'datasets/tic-tac-toe.names' # label: 9
+data_path = 'datasets/iris.data'
+scheme_path = 'datasets/iris.names' # label: 4
+# data_path = 'datasets/tic-tac-toe.data'
+# scheme_path = 'datasets/tic-tac-toe.names' # label: 9
 # data_path = 'datasets/glass.data'
 # scheme_path = 'datasets/glass.names' # label: 10
 # data_path = 'datasets/lymphography.data'
@@ -216,12 +216,12 @@ for k in range(len(split_point)-1):
 
 
 
-print("\nAverage CBA-RG's run time with pruning: %f ms" % ((cba_rg_total_runtime / number_of_partitions)*1000))
-print("Average CBA-CB M1's run time with pruning: %f ms" % ((cba_cb_bagging_total_runtime / number_of_partitions)*1000))
-print("Average Total CBA-CB M1 + RG's run time with pruning: %f ms" % (((cba_cb_bagging_total_runtime+cba_rg_total_runtime)/number_of_partitions)*1000))
-print("Average CBA's error rate with pruning: %f%%" % (error_total_rate / number_of_partitions * 100))
-print("Average No. of rules in classifier with pruning: %d" % int(total_classifier_rule_num / number_of_partitions))
-print("Average No. of CARs with pruning: %d" % int(total_car / number_of_partitions))
+print("\nAverage CBA-RG's run time without pruning: %f ms" % ((cba_rg_total_runtime / number_of_partitions)*1000))
+print("Average CBA-CB M1's run time without pruning: %f ms" % ((cba_cb_bagging_total_runtime / number_of_partitions)*1000))
+print("Average Total CBA-CB M1 + RG's run time without pruning: %f ms" % (((cba_cb_bagging_total_runtime+cba_rg_total_runtime)/number_of_partitions)*1000))
+print("Average CBA's error rate without pruning: %f%%" % (error_total_rate / number_of_partitions * 100))
+print("Average No. of rules in classifier without pruning: %d" % int(total_classifier_rule_num / number_of_partitions))
+print("Average No. of CARs without pruning: %d" % int(total_car / number_of_partitions))
 
 print("\nPrecision_score:", round((total_precision_score/number_of_partitions), 3))
 print("Recall_score:", round((total_recall_score/number_of_partitions), 3))
