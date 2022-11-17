@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 # Datasets that worked
 # data_path = 'datasets/car.data'
 # scheme_path = 'datasets/car.names' # label: 6
-# data_path = 'datasets/iris.data'
-# scheme_path = 'datasets/iris.names'
+data_path = 'datasets/iris.data'
+scheme_path = 'datasets/iris.names'
 # data_path = 'datasets/tic-tac-toe.data'
 # scheme_path = 'datasets/tic-tac-toe.names'
-data_path = 'datasets/glass.data'
-scheme_path = 'datasets/glass.names' # label: 10
+# data_path = 'datasets/glass.data'
+# scheme_path = 'datasets/glass.names' # label: 10
 # data_path = 'datasets/lymphography.data'
 # scheme_path = 'datasets/lymphography.names' # label: 0
 # data_path = 'datasets/haberman.data'
@@ -162,6 +162,6 @@ print("Average No. of CARs with pruning: %d" % int(total_car / 10))
 # print("Recall_score: %f" % round(recall_score(true, pred, average='macro', zero_division=0),3))
 # print("F1_score: %f" % round(f1_score(true, pred, average='macro', zero_division=0),3))
 
-print("Average CBA's Precision Score without pruning: %f" % (total_precision_score / 10))
-print("Average CBA's Recall Score without pruning: %f" % (total_recall_score / 10))
-print("Average CBA's F1 Score without pruning: %f" % (total_f1_score / 10))
+print("Average CBA's Precision Score with pruning: %f" % (total_precision_score / 10))
+print("Average CBA's Recall Score with pruning: %f" % (total_recall_score / 10))
+print("Average CBA's F1 Score with pruning: %f" % (total_f1_score / 10))
